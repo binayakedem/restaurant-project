@@ -44,7 +44,7 @@ export const loginUser = async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (isMatch) {
-      const token = jwt.sign({ email: user.email, id: user._id, name: user.name,role: user.role ,image:user.image,phone:user.phone }, secrete, { expiresIn: '30d' });
+      const token = jwt.sign({ email: user.email, id: user._id, name: user.name,role: user.role ,image:user.image,phone:user.phone }, secrete, { expiresIn: '10d' });
       return res.json({ token ,message:'Login successfully',useremail:user.email});
     } else {
       return res.json({ error: 'Password is not match.' });
@@ -92,3 +92,19 @@ export const getUser = async (req, res) => {
     res.status(403).json({ error: 'Forbidden' }); 
   }
 };
+
+// for gettin all user
+export const getAllUsers=async (req, res)=>{
+  const { category } = req.query; 
+let query = {};
+if (category) {
+  query.category = category; 
+}
+try {
+  const foods = await foodApi.find(query);
+  res.json(foods);
+} catch (error) {
+  console.error('Error fetching foods:', error.message);
+  res.status(500).json({ message: 'Server error' });
+}
+}
